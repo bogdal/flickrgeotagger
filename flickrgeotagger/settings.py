@@ -110,6 +110,10 @@ TEMPLATE_DIRS = (
     path.join(PROJECT_ROOT, 'templates')
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.messages.context_processors.messages',
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,4 +1,6 @@
+from django.contrib import messages
 from django.views.generic import FormView, TemplateView
+from django.utils.translation import ugettext_lazy as _
 from flickrgeotagger.flickr.views import FlickrAuthRequiredMixin
 from flickrgeotagger.geotagger.forms import UploadFileForm
 
@@ -15,7 +17,11 @@ class UploadFileView(FlickrAuthRequiredMixin, FormView):
     form_class = UploadFileForm
 
     def form_valid(self, form):
-        self.request.session['photos'] = form.get_photos(self.flickr_api)
+        photos = form.get_photos(self.flickr_api)
+        self.request.session['photos'] = photos
+        messages.success(self.request,
+                         _("%(count)d photos were found on flickr" %
+                           {'count': len(photos)}))
         return super(UploadFileView, self).form_valid(form)
 
     def get_success_url(self):
