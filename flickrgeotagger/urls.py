@@ -4,8 +4,10 @@ from django.conf.urls import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^flickr/', include('flickrgeotagger.flickr.urls')),
+    url(r'^', include('flickrgeotagger.geotagger.urls')),
 
     # Examples:
     # url(r'^$', 'flickrgeotagger.views.home', name='home'),

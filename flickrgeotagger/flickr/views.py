@@ -1,7 +1,18 @@
+from django.utils.decorators import method_decorator
 from django.views.generic import RedirectView
 from django.conf import settings
 
+from flickrgeotagger.flickr.decorators import require_flickr_auth
+
 import flickrapi
+
+
+class FlickrAuthRequiredMixin(object):
+
+    @method_decorator(require_flickr_auth)
+    def dispatch(self, request, *args, **kwargs):
+        return (super(FlickrAuthRequiredMixin, self)
+                .dispatch(request, *args, **kwargs))
 
 
 class CallbackView(RedirectView):

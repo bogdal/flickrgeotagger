@@ -123,6 +123,8 @@ INSTALLED_APPS = (
     'flickrgeotagger.geotagger',
 )
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
 FLICKR_API_KEY = ''
 FLICKR_API_SECRET = ''
 
