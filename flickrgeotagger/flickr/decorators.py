@@ -10,10 +10,7 @@ def require_flickr_auth(view):
     '''
 
     def protected_view(request, *args, **kwargs):
-        if 'token' in request.session:
-            token = request.session['token']
-        else:
-            token = None
+        token = request.session.get('token', None)
 
         flickr_api = flickrapi.FlickrAPI(
             settings.FLICKR_API_KEY,
@@ -34,5 +31,5 @@ def require_flickr_auth(view):
             url = flickr_api.web_login_url(perms='write')
             return HttpResponseRedirect(url)
 
-        return view(request, *args, **kwargs)
+        return view(request, flickr_api, *args, **kwargs)
     return protected_view

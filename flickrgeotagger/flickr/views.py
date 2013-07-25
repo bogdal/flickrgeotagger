@@ -10,7 +10,8 @@ import flickrapi
 class FlickrAuthRequiredMixin(object):
 
     @method_decorator(require_flickr_auth)
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, flickr_api, *args, **kwargs):
+        self.flickr_api = flickr_api
         return (super(FlickrAuthRequiredMixin, self)
                 .dispatch(request, *args, **kwargs))
 

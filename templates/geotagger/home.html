@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block container %}
+    <a href="{% url "upload_file" %}" class='btn'>{% trans "Upload gpx file" %}</a>
 {% endblock %}
