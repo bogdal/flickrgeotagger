@@ -27,3 +27,8 @@ class CallbackView(RedirectView):
                                     .get_token(request.GET.get('frob')))
 
         return super(CallbackView, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, **kwargs):
+        if hasattr(settings, 'FLICKR_CALLBACK_REDIRECT_URL'):
+            return settings.FLICKR_CALLBACK_REDIRECT_URL
+        return "/"
