@@ -5,6 +5,8 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^flickr/', include('flickrgeotagger.flickr.urls')),
+
     # Examples:
     # url(r'^$', 'flickrgeotagger.views.home', name='home'),
     # url(r'^flickrgeotagger/', include('flickrgeotagger.foo.urls')),
