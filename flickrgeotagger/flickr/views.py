@@ -20,12 +20,16 @@ class CallbackView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         flickr_api = flickrapi.FlickrAPI(
-            settings.FLICKR_API_KEY,
-            settings.FLICKR_API_SECRET,
-            store_token=False)
+            unicode(settings.FLICKR_API_KEY),
+            unicode(settings.FLICKR_API_SECRET))
 
-        request.session['token'] = (flickr_api
-                                    .get_token(request.GET.get('frob')))
+        oauth = flickr_api.flickr_oauth
+        oauth.resource_owner_key = request.session['request_token']
+        oauth.resource_owner_secret = request.session['request_token_secret']
+        oauth.requested_permissions = request.session['requested_permissions']
+
+        verifier = request.GET.get('oauth_verifier')
+        flickr_api.get_access_token(verifier)
 
         return super(CallbackView, self).get(request, *args, **kwargs)
 
