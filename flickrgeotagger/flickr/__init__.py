@@ -3,10 +3,13 @@ import flickrapi
 
 
 def get_api_instance(request):
-    oauth_token = request.session.get('oauth_token')
-
-    return flickrapi.FlickrAPI(
-        unicode(settings.FLICKR_API_KEY),
-        unicode(settings.FLICKR_API_SECRET),
-        token=oauth_token,
-        store_token=False)
+    kwargs = {
+        'api_key': unicode(settings.FLICKR_API_KEY),
+        'secret': unicode(settings.FLICKR_API_SECRET),
+    }
+    if not getattr(settings, 'FLICKR_OAUTH_TOKEN_CACHE', False):
+        kwargs.update({
+            'token': request.session.get('oauth_token'),
+            'store_token': False
+        })
+    return flickrapi.FlickrAPI(**kwargs)

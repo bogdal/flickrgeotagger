@@ -30,7 +30,8 @@ class CallbackView(RedirectView):
         verifier = request.GET.get('oauth_verifier')
         flickr_api.get_access_token(verifier)
 
-        session['oauth_token'] = flickr_api.flickr_oauth.token
+        if not getattr(settings, 'FLICKR_OAUTH_TOKEN_CACHE', False):
+            session['oauth_token'] = flickr_api.flickr_oauth.token
 
         return super(CallbackView, self).get(request, *args, **kwargs)
 

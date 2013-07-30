@@ -130,6 +130,7 @@ FLICKR_API_KEY = ''
 FLICKR_API_SECRET = ''
 FLICKR_PERMS = 'write'
 
+FLICKR_OAUTH_TOKEN_CACHE = True
 FLICKR_CALLBACK_REDIRECT_URL = '/upload'
 
 # A sample logging configuration. The only tangible logging
