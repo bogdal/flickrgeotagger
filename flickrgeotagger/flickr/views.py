@@ -4,7 +4,7 @@ from django.conf import settings
 
 from flickrgeotagger.flickr.decorators import require_flickr_auth
 
-import flickrapi
+from . import get_api_instance
 
 
 class FlickrAuthRequiredMixin(object):
@@ -19,21 +19,21 @@ class FlickrAuthRequiredMixin(object):
 class CallbackView(RedirectView):
 
     def get(self, request, *args, **kwargs):
-        flickr_api = flickrapi.FlickrAPI(
-            unicode(settings.FLICKR_API_KEY),
-            unicode(settings.FLICKR_API_SECRET))
 
+        flickr_api = get_api_instance(request)
+
+        session = request.session
         oauth = flickr_api.flickr_oauth
-        oauth.resource_owner_key = request.session['request_token']
-        oauth.resource_owner_secret = request.session['request_token_secret']
-        oauth.requested_permissions = request.session['requested_permissions']
+        oauth.resource_owner_key = session.get('request_token')
+        oauth.resource_owner_secret = session.get('request_token_secret')
+        oauth.requested_permissions = session.get('requested_permissions')
 
         verifier = request.GET.get('oauth_verifier')
         flickr_api.get_access_token(verifier)
 
+        session['oauth_token'] = flickr_api.flickr_oauth.token
+
         return super(CallbackView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        if hasattr(settings, 'FLICKR_CALLBACK_REDIRECT_URL'):
-            return settings.FLICKR_CALLBACK_REDIRECT_URL
-        return "/"
+        return getattr(settings, 'FLICKR_CALLBACK_REDIRECT_URL', '/')

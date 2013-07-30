@@ -128,12 +128,9 @@ INSTALLED_APPS = (
 
 FLICKR_API_KEY = ''
 FLICKR_API_SECRET = ''
+FLICKR_PERMS = 'write'
 
 FLICKR_CALLBACK_REDIRECT_URL = '/upload'
-
-CANONICAL_HOSTNAME = 'localhost:8000'
-
-CANONICAL_BASE_URL = 'http://%s/' % CANONICAL_HOSTNAME
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

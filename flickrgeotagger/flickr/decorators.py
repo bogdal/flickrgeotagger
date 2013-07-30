@@ -2,21 +2,18 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
-import flickrapi
+from . import get_api_instance
 
 
 def require_flickr_auth(view):
 
     def protected_view(request, *args, **kwargs):
-        flickr_perms = 'write'
+        flickr_perms = getattr(settings, 'FLICKR_PERMS', 'read')
 
-        flickr_api = flickrapi.FlickrAPI(
-            unicode(settings.FLICKR_API_KEY),
-            unicode(settings.FLICKR_API_SECRET))
+        flickr_api = get_api_instance(request)
 
         if not flickr_api.token_valid(perms=flickr_perms):
-            callback = "%s%s" % (settings.CANONICAL_BASE_URL,
-                                 reverse('flickr_callback'))
+            callback = request.build_absolute_uri(reverse('flickr_callback'))
             flickr_api.get_request_token(oauth_callback=callback)
 
             authorize_url = flickr_api.auth_url(perms=flickr_perms)
