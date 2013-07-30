@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from flickrgeotagger.flickr.views import CallbackView
+from .views import CallbackView
 
 
 urlpatterns = patterns(

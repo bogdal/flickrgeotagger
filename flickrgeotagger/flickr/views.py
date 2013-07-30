@@ -2,8 +2,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import RedirectView
 from django.conf import settings
 
-from flickrgeotagger.flickr.decorators import require_flickr_auth
-
+from .decorators import require_flickr_auth
 from . import get_api_instance
 
 
