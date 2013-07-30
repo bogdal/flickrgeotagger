@@ -1,5 +1,5 @@
 Django==1.5.1
 gpxpy==0.9.0
 pytz==2013b
-git+https://github.com/dargad/flickrapi
-
+python-flickr==0.3.0
+django-social-auth==0.7.25

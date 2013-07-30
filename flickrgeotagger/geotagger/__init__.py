@@ -1,0 +1,4 @@
+
+
+class GeoTagger(object):
+    pass

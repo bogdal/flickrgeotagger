@@ -112,6 +112,10 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
+    'social_auth.context_processors.social_auth_by_name_backends',
+    'social_auth.context_processors.social_auth_backends',
+    'social_auth.context_processors.social_auth_by_type_backends',
+    'social_auth.context_processors.social_auth_login_redirect',
 )
 
 INSTALLED_APPS = (
@@ -122,16 +126,26 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'flickrgeotagger.flickr',
     'flickrgeotagger.geotagger',
+
+    # external
+    'social_auth',
 )
 
-FLICKR_API_KEY = ''
+FLICKR_APP_ID = ''
 FLICKR_API_SECRET = ''
-FLICKR_PERMS = 'write'
 
-FLICKR_OAUTH_TOKEN_CACHE = True
-FLICKR_CALLBACK_REDIRECT_URL = '/upload'
+FLICKR_AUTH_EXTRA_ARGUMENTS = {'perms': 'write'}
+
+LOGIN_REDIRECT_URL = '/upload/'
+LOGIN_URL = '/login-form/'
+LOGIN_ERROR_URL = '/login-error/'
+
+
+AUTHENTICATION_BACKENDS = (
+    'social_auth.backends.contrib.flickr.FlickrBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -5,11 +5,13 @@ from datetime import datetime
 from pytz import timezone
 import gpxpy
 import gpxpy.gpx
+from timezone_field import TimeZoneFormField
 
 
 class UploadFileForm(forms.Form):
 
     gpx_file = forms.FileField()
+    timezone = TimeZoneFormField()
 
     def clean_gpx_file(self):
         data = self.cleaned_data.get('gpx_file')
@@ -33,15 +35,17 @@ class UploadFileForm(forms.Form):
         min_taken_date = utc.localize(min_taken_date).astimezone(user_timezone)
         max_taken_date = utc.localize(max_taken_date).astimezone(user_timezone)
 
-        flickr_photos = flickr_api.walk(
-            user_id='me',
-            has_geo=1,
-            min_taken_date=min_taken_date,
-            max_taken_date=max_taken_date,
-            extras="geo, url_t, url_s, date_taken")
+        flickr_photos = flickr_api.get('flickr.photos.search',
+                                       params={
+                                           'user_id': 'me',
+                                           'has_geo': 1,
+                                           'min_taken_date': min_taken_date,
+                                           'max_taken_date': max_taken_date,
+                                           'extras':
+                                                "geo,url_t,url_s,date_taken"})
 
         photos_with_location = []
-        for photo in flickr_photos:
+        for photo in flickr_photos.get('photos').get('photo'):
             taken = datetime.strptime(photo.get('datetaken'), date_format)
             taken = user_timezone.localize(taken)
 
