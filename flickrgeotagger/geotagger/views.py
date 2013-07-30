@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from flickr import FlickrAPI
 
-from .forms import UploadFileForm
+from .forms import UploadGpxFileForm
 
 import urlparse
 
@@ -38,7 +38,7 @@ class HomeView(TemplateView):
 
 class UploadFileView(FlickrRequiredMixin, FormView):
     template_name = 'geotagger/upload_file.html'
-    form_class = UploadFileForm
+    form_class = UploadGpxFileForm
 
     def form_valid(self, form):
         photos = form.get_photos(self.flickr_api)

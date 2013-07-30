@@ -1,24 +1,22 @@
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from datetime import datetime
-from pytz import timezone
-import gpxpy
-import gpxpy.gpx
-from timezone_field import TimeZoneFormField
+from pytz import timezone, common_timezones
+from flickrgeotagger.geotagger import GeoTagger, GpxBackend, BackendException
 
 
-class UploadFileForm(forms.Form):
+class UploadGpxFileForm(forms.Form):
 
     gpx_file = forms.FileField()
-    timezone = TimeZoneFormField()
+    timezone = forms.ChoiceField(choices=[(x, x) for x in common_timezones], initial=settings.TIME_ZONE)
 
-    def clean_gpx_file(self):
-        data = self.cleaned_data.get('gpx_file')
+    def clean(self):
+        data = self.cleaned_data
 
         try:
-            self.gpx = gpxpy.parse(data)
-        except gpxpy.gpx.GPXXMLSyntaxException:
+            self.gpx = GpxBackend(data.get('gpx_file'), timezone(data.get('timezone')))
+        except BackendException:
             raise forms.ValidationError(_("Error parsing file"))
 
         return data
@@ -26,41 +24,6 @@ class UploadFileForm(forms.Form):
     def get_photos(self, flickr_api):
         self.full_clean()
 
-        user_timezone = timezone('Europe/Warsaw') # @TODO
+        geo_tagger = GeoTagger(api=flickr_api, coordinates=self.gpx)
 
-        utc = timezone('UTC')
-        date_format = "%Y-%m-%d %H:%M:%S"
-
-        min_taken_date, max_taken_date = self.gpx.get_time_bounds()
-        min_taken_date = utc.localize(min_taken_date).astimezone(user_timezone)
-        max_taken_date = utc.localize(max_taken_date).astimezone(user_timezone)
-
-        flickr_photos = flickr_api.get('flickr.photos.search',
-                                       params={
-                                           'user_id': 'me',
-                                           'has_geo': 1,
-                                           'min_taken_date': min_taken_date,
-                                           'max_taken_date': max_taken_date,
-                                           'extras':
-                                                "geo,url_t,url_s,date_taken"})
-
-        photos_with_location = []
-        for photo in flickr_photos.get('photos').get('photo'):
-            taken = datetime.strptime(photo.get('datetaken'), date_format)
-            taken = user_timezone.localize(taken)
-
-            taken_utc = taken.astimezone(utc).replace(tzinfo=None)
-            gpx_locations = self.gpx.get_location_at(taken_utc)
-            if gpx_locations:
-                gpx_location = gpx_locations.pop()
-
-                photos_with_location.append({
-                    'id': photo.get('id'),
-                    'title': photo.get('title'),
-                    'taken': taken,
-                    'url': photo.get('url_s'),
-                    'latitude': gpx_location.latitude,
-                    'longitude': gpx_location.longitude
-                })
-
-        return photos_with_location
+        return geo_tagger.get_localized_photos()
