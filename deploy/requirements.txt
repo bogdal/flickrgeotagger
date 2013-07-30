@@ -2,4 +2,5 @@ Django==1.5.1
 gpxpy==0.9.0
 pytz==2013b
 python-flickr==0.3.0
+python-openid==2.2.5
 django-social-auth==0.7.25
