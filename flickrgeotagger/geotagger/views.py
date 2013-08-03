@@ -1,32 +1,14 @@
 from django.contrib import messages
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from django.utils.translation import ugettext_lazy as _
 
-from flickr import FlickrAPI
-
 from .forms import UploadGpxFileForm
+from .views_mixins import FlickrRequiredMixin
 
-import urlparse
 
-
-class FlickrRequiredMixin(object):
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        tokens = request.user.social_auth.get(provider='flickr').tokens
-        tokens = dict(urlparse.parse_qsl(tokens.get('access_token')))
-
-        self.flickr_api = FlickrAPI(
-            api_key=settings.FLICKR_APP_ID,
-            api_secret=settings.FLICKR_API_SECRET,
-            oauth_token=tokens.get('oauth_token'),
-            oauth_token_secret=tokens.get('oauth_token_secret'))
-
-        return (super(FlickrRequiredMixin, self)
-                .dispatch(request, *args, **kwargs))
+GEOTAGGER_SESSION_KEY = 'geotagger'
 
 
 class HomeView(TemplateView):
@@ -41,12 +23,27 @@ class UploadFileView(FlickrRequiredMixin, FormView):
     form_class = UploadGpxFileForm
 
     def form_valid(self, form):
-        photos = form.get_photos(self.flickr_api)
-        self.request.session['photos'] = photos
+        geotagger = form.get_geotagger(self.flickr_api)
+        self.request.session[GEOTAGGER_SESSION_KEY] = geotagger
         messages.success(self.request,
                          _("%(count)d photos were found on flickr" %
-                           {'count': len(photos)}))
+                           {'count': len(geotagger.get_localized_photos())}))
         return super(UploadFileView, self).form_valid(form)
 
     def get_success_url(self):
-        return "/"
+        return reverse('preview_photos')
+
+
+class PreviewView(FlickrRequiredMixin, TemplateView):
+    template_name = 'geotagger/preview.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.geotagger = request.session.get(GEOTAGGER_SESSION_KEY)
+        if not self.geotagger:
+            return HttpResponseRedirect(reverse('upload_file'))
+        return (super(PreviewView, self)
+                .dispatch(request, *args, **kwargs))
+
+    def get_context_data(self, **kwargs):
+        context = super(PreviewView, self).get_context_data(**kwargs)
+        return context

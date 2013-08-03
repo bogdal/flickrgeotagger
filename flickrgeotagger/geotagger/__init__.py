@@ -51,11 +51,18 @@ class GeoTagger(object):
         self.api = api
         self.coordinates = coordinates
 
+    def __repr__(self):
+        return u"GeoTagger (api=%s, coordinates=%s)" % \
+               (self.api, self.coordinates)
+
     def get_time_from_string(self, time_as_string,
                              date_format="%Y-%m-%d %H:%M:%S"):
         return datetime.strptime(time_as_string, date_format)
 
     def get_localized_photos(self, **kwargs):
+        if hasattr(self, '_get_localized_photos'):
+            return self._get_localized_photos
+
         localized_photos = []
 
         photos = self.api.get('flickr.photos.search',
@@ -82,10 +89,10 @@ class GeoTagger(object):
                     'longitude': location.longitude
                 })
 
+        setattr(self, '_get_localized_photos', localized_photos)
         return localized_photos
         
     def save_location(self, photos=None):
         if photos is None:
             photos = self.get_localized_photos()
-            
-        
+        # @TODO

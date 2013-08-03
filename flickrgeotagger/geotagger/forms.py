@@ -21,9 +21,6 @@ class UploadGpxFileForm(forms.Form):
 
         return data
 
-    def get_photos(self, flickr_api):
+    def get_geotagger(self, flickr_api):
         self.full_clean()
-
-        geo_tagger = GeoTagger(api=flickr_api, coordinates=self.gpx)
-
-        return geo_tagger.get_localized_photos()
+        return GeoTagger(api=flickr_api, coordinates=self.gpx)
