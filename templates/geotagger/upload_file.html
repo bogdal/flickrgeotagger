@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block container %}
-    <form action="." method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="{% trans 'upload' %}" class="btn btn-primary">
-    </form>
+{% block content %}
+    <div class="span12">
+        <form action="." method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="{% trans 'upload' %}" class="btn btn-primary">
+        </form>
+    </div>
 {% endblock %}
