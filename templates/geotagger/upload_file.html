@@ -3,10 +3,14 @@
 
 {% block content %}
     <div class="span12">
-        <form action="." method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="{% trans 'upload' %}" class="btn btn-primary">
+        <form action="." method="post" enctype="multipart/form-data" class="form-horizontal">
+            <fieldset>
+                {% csrf_token %}
+                {{ form }}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{% trans 'Upload' %}</button>
+              </div>
+          </fieldset>
         </form>
     </div>
 {% endblock %}

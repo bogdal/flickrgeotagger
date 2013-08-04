@@ -12,6 +12,9 @@ class Backend(object):
     def get_end_time(self):
         raise NotImplementedError()
 
+    def get_points(self):
+        raise NotImplementedError()
+
     def get_location_at(self, time):
         raise NotImplementedError()
 
@@ -37,6 +40,14 @@ class GpxBackend(Backend):
 
     def get_end_time(self):
         return self.utc.localize(self.end_time).astimezone(self.timezone)
+
+    def get_points(self):
+        points = []
+        for track in self.gpx.tracks:
+            for segment in track.segments:
+                for point in segment.points:
+                    points.append({"latitude": point.latitude, "longitude": point.longitude})
+        return points
 
     def get_location_at(self, time):
         time = self.timezone.localize(time).astimezone(self.utc).replace(tzinfo=None)

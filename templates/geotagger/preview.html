@@ -1,11 +1,13 @@
 {% extends "base.html" %}
-{% load i18n static %}
+{% load i18n static json_tags %}
 
 {% block js_footer %}
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="{% static "js/geo.js" %}"></script>
     <script>
-        show_map();
+        var photos = $.parseJSON('{{ geotagger.get_localized_photos|json }}');
+        var points = $.parseJSON('{{ geotagger.coordinates.get_points|json }}');
+        show_map(photos, points);
     </script>
 {% endblock %}
 
