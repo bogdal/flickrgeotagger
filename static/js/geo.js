@@ -59,7 +59,7 @@ function show_points(points) {
     });
 }
 
-function show_map(photos, way_points){
+function show_map(photos, points){
     initialize();
     show_markers(photos);
     show_points(points);
