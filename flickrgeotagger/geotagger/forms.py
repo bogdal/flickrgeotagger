@@ -9,13 +9,15 @@ from flickrgeotagger.geotagger import GeoTagger, GpxBackend, BackendException
 class UploadGpxFileForm(forms.Form):
 
     gpx_file = forms.FileField()
-    timezone = forms.ChoiceField(choices=[(x, x) for x in common_timezones], initial=settings.TIME_ZONE)
+    timezone = forms.ChoiceField(choices=[(x, x) for x in common_timezones],
+                                 initial=settings.TIME_ZONE)
 
     def clean(self):
         data = self.cleaned_data
 
         try:
-            self.gpx = GpxBackend(data.get('gpx_file'), timezone(data.get('timezone')))
+            self.gpx = GpxBackend(data.get('gpx_file'),
+                                  timezone(data.get('timezone')))
         except BackendException:
             raise forms.ValidationError(_("Error parsing file"))
 
