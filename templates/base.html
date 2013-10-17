@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static i18n sekizai_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +16,7 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static "css/styles.css" %}" rel="stylesheet">
+    {% render_block "css" %}
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -23,8 +24,6 @@
 {#      <script src="../../assets/js/respond.min.js"></script>#}
     <![endif]-->
 
-    {% block js_head %}
-    {% endblock %}
   </head>
 
   <body>
@@ -38,15 +37,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">FlickGeoTagger</a>
+          <a class="navbar-brand" href="/">FlickrGeoTagger</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="{% url "upload_file" %}">{% trans "Upload new file" %}</a></li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">{{ gpx_file }}</a></li>
-          </ul>
+          {% block navbar_right %}{% endblock %}
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -68,8 +65,7 @@
     <script src="//code.jquery.com/jquery.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
-    {% block js_footer %}
-    {% endblock %}
+    {% render_block "js" %}
   
   </body>
 </html>

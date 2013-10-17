@@ -116,6 +116,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social_auth.context_processors.social_auth_backends',
     'social_auth.context_processors.social_auth_by_type_backends',
     'social_auth.context_processors.social_auth_login_redirect',
+    'sekizai.context_processors.sekizai',
 )
 
 INSTALLED_APPS = (
@@ -130,6 +131,7 @@ INSTALLED_APPS = (
 
     # external
     'social_auth',
+    'sekizai',
 )
 
 FLICKR_APP_ID = ''

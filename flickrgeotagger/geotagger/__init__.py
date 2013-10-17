@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.conf import settings
 import gpxpy
 import gpxpy.gpx
 from pytz import timezone
@@ -50,9 +51,12 @@ class GpxBackend(Backend):
 
 class GeoTagger(object):
 
+    utc = timezone('UTC')
+
     def __init__(self, api, coordinates):
         self.api = api
         self.coordinates = coordinates
+        self.timezone = timezone(settings.TIME_ZONE)
 
     def __repr__(self):
         return (u"GeoTagger (api=%s, coordinates=%s)" %
@@ -62,25 +66,41 @@ class GeoTagger(object):
                              date_format="%Y-%m-%d %H:%M:%S"):
         return datetime.strptime(time_as_string, date_format)
 
+    def _utc_to_user_timezone(self, time, user_timezone):
+        return self.utc.localize(time).astimezone(user_timezone)
+
+    def _user_timezone_to_utc(self, time, user_timezone):
+        return user_timezone.localize(time).astimezone(self.utc)
+
+    def set_timezone(self, timezone):
+        if hasattr(self, '_get_localized_photos'):
+            delattr(self, '_get_localized_photos')
+        self.timezone = timezone
+
     def get_localized_photos(self):
         if hasattr(self, '_get_localized_photos'):
             return self._get_localized_photos
 
         localized_photos = []
 
+        start_time = self._utc_to_user_timezone(self.coordinates.start_time,
+                                                self.timezone)
+        end_time = self._utc_to_user_timezone(self.coordinates.end_time,
+                                              self.timezone)
         photos = (self.api
                   .get('flickr.photos.search',
                        params={
                            'user_id': 'me',
-                           'min_taken_date': self.coordinates.start_time,
-                           'max_taken_date': self.coordinates.end_time,
+                           'min_taken_date': start_time,
+                           'max_taken_date': end_time,
                            'per_page': 500,
                            'extras': "geo,url_t,url_s,date_taken"})
                   .get('photos'))
 
         for photo in photos.get('photo'):
             taken = self.get_time_from_string(photo.get('datetaken'))
-            
+            taken = (self._user_timezone_to_utc(taken, self.timezone)
+                     .replace(tzinfo=None))
             location = self.coordinates.get_location_at(taken)
             if location:
 
