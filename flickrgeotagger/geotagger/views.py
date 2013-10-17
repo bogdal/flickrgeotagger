@@ -1,8 +1,7 @@
-from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from django.utils.translation import ugettext_lazy as _
+from flickrgeotagger.geotagger import GeoTagger
 
 from .forms import UploadGpxFileForm
 from .views_mixins import FlickrRequiredMixin
@@ -18,16 +17,13 @@ class HomeView(TemplateView):
         return super(HomeView, self).get_context_data(**kwargs)
 
 
-class UploadFileView(FlickrRequiredMixin, FormView):
+class UploadFileView(FormView):
     template_name = 'geotagger/upload_file.html'
     form_class = UploadGpxFileForm
 
     def form_valid(self, form):
-        geotagger = form.get_geotagger(self.flickr_api)
-        self.request.session[GEOTAGGER_SESSION_KEY] = geotagger
-        messages.success(self.request,
-                         _("%(count)d photos were found on flickr" %
-                           {'count': len(geotagger.get_localized_photos())}))
+        session = {'gpx': form.gpx}
+        self.request.session[GEOTAGGER_SESSION_KEY] = session
         return super(UploadFileView, self).form_valid(form)
 
     def get_success_url(self):
@@ -37,14 +33,12 @@ class UploadFileView(FlickrRequiredMixin, FormView):
 class PreviewView(FlickrRequiredMixin, TemplateView):
     template_name = 'geotagger/preview.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        self.geotagger = request.session.get(GEOTAGGER_SESSION_KEY)
-        if not self.geotagger:
-            return HttpResponseRedirect(reverse('upload_file'))
-        return (super(PreviewView, self)
-                .dispatch(request, *args, **kwargs))
-
     def get_context_data(self, **kwargs):
         context = super(PreviewView, self).get_context_data(**kwargs)
-        context['geotagger'] = self.geotagger
+        self.gpx = (self.request.session
+                    .get(GEOTAGGER_SESSION_KEY, {}).get('gpx'))
+
+        context['gpx_file'] = self.gpx.gpx_file
+        context['geotagger'] = GeoTagger(api=self.flickr_api,
+                                         coordinates=self.gpx)
         return context

@@ -25,21 +25,13 @@ class BackendException(Exception):
 
 class GpxBackend(Backend):
 
-    utc = timezone('UTC')
-
-    def __init__(self, data, timezone):
+    def __init__(self, data):
+        self.gpx_file = data
         try:
             self.gpx = gpxpy.parse(data)
         except gpxpy.gpx.GPXXMLSyntaxException:
             raise BackendException()
-        self.timezone = timezone
         self.start_time, self.end_time = self.gpx.get_time_bounds()
-
-    def get_start_time(self):
-        return self.utc.localize(self.start_time).astimezone(self.timezone)
-
-    def get_end_time(self):
-        return self.utc.localize(self.end_time).astimezone(self.timezone)
 
     def get_points(self):
         points = []
@@ -51,8 +43,6 @@ class GpxBackend(Backend):
         return points
 
     def get_location_at(self, time):
-        time = (self.timezone.localize(time).astimezone(self.utc)
-                .replace(tzinfo=None))
         gpx_locations = self.gpx.get_location_at(time)
         if gpx_locations:
             return gpx_locations.pop()
@@ -72,7 +62,7 @@ class GeoTagger(object):
                              date_format="%Y-%m-%d %H:%M:%S"):
         return datetime.strptime(time_as_string, date_format)
 
-    def get_localized_photos(self, **kwargs):
+    def get_localized_photos(self):
         if hasattr(self, '_get_localized_photos'):
             return self._get_localized_photos
 
@@ -82,8 +72,9 @@ class GeoTagger(object):
                   .get('flickr.photos.search',
                        params={
                            'user_id': 'me',
-                           'min_taken_date': self.coordinates.get_start_time(),
-                           'max_taken_date': self.coordinates.get_end_time(),
+                           'min_taken_date': self.coordinates.start_time,
+                           'max_taken_date': self.coordinates.end_time,
+                           'per_page': 500,
                            'extras': "geo,url_t,url_s,date_taken"})
                   .get('photos'))
 
