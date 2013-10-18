@@ -1,10 +1,10 @@
-from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from django.utils.translation import ugettext_lazy as _
+from flickrgeotagger.geotagger import GeoTagger
+from pytz import timezone
 
-from .forms import UploadGpxFileForm
+from .forms import UploadGpxFileForm, TimezoneForm
 from .views_mixins import FlickrRequiredMixin
 
 
@@ -23,28 +23,37 @@ class UploadFileView(FlickrRequiredMixin, FormView):
     form_class = UploadGpxFileForm
 
     def form_valid(self, form):
-        geotagger = form.get_geotagger(self.flickr_api)
-        self.request.session[GEOTAGGER_SESSION_KEY] = geotagger
-        messages.success(self.request,
-                         _("%(count)d photos were found on flickr" %
-                           {'count': len(geotagger.get_localized_photos())}))
+        session = {
+            'gpx': form.gpx,
+            'geotagger': GeoTagger(api=self.flickr_api, coordinates=form.gpx)
+        }
+        self.request.session[GEOTAGGER_SESSION_KEY] = session
         return super(UploadFileView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('preview_photos')
 
 
-class PreviewView(FlickrRequiredMixin, TemplateView):
+class PreviewView(FlickrRequiredMixin, FormView):
     template_name = 'geotagger/preview.html'
+    form_class = TimezoneForm
 
     def dispatch(self, request, *args, **kwargs):
-        self.geotagger = request.session.get(GEOTAGGER_SESSION_KEY)
-        if not self.geotagger:
-            return HttpResponseRedirect(reverse('upload_file'))
+        self.geotagger = (self.request.session.get(GEOTAGGER_SESSION_KEY, {}))
         return (super(PreviewView, self)
                 .dispatch(request, *args, **kwargs))
 
     def get_context_data(self, **kwargs):
         context = super(PreviewView, self).get_context_data(**kwargs)
-        context['geotagger'] = self.geotagger
+
+        context['gpx_file'] = self.geotagger.get('gpx').gpx_file
+        context['geotagger'] = self.geotagger.get('geotagger')
+
         return context
+
+    def form_valid(self, form):
+        geotagger = self.geotagger.get('geotagger')
+        geotagger.set_timezone(timezone(form.cleaned_data['timezone']))
+
+        return self.render_to_response(
+            self.get_context_data(form=form, geotagger=geotagger))

@@ -1,16 +1,45 @@
 {% extends "base.html" %}
-{% load i18n static json_tags %}
+{% load i18n static json_tags sekizai_tags %}
 
-{% block js_footer %}
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-    <script src="{% static "js/geo.js" %}"></script>
-    <script>
-        var photos = $.parseJSON('{{ geotagger.get_localized_photos|json }}');
-        var points = $.parseJSON('{{ geotagger.coordinates.get_points|json }}');
-        show_map(photos, points);
-    </script>
+{% block navbar_right %}
+  <ul class="nav navbar-nav navbar-right">
+    <li>
+        <form id='timezone-frm' action='.' method='post'>
+            {% csrf_token %}
+            {{ form.timezone }}
+        </form>
+    </li>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ gpx_file }} <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">{{ geotagger.get_localized_photos|length }} {% trans "photos" %}</li>
+        <li><a href="#">{% trans "Save all photos" %}</a></li>
+      </ul>
+    </li>
+  </ul>
+
+    {% addtoblock "js" %}
+        <script>
+            $(function() {
+                $("#id_timezone").change(function(){
+                   $("#timezone-frm").submit();
+                });
+            });
+        </script>
+    {% endaddtoblock %}
 {% endblock %}
 
 {% block container %}
+
+    {% addtoblock "js" %}
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script src="{% static "js/geo.js" %}"></script>
+        <script>
+            var photos = $.parseJSON('{{ geotagger.get_localized_photos|json }}');
+            var points = $.parseJSON('{{ geotagger.coordinates.get_points|json }}');
+            show_map(photos, points);
+        </script>
+    {% endaddtoblock %}
+
     <div id="map_canvas" class='map'></div>
 {% endblock %}

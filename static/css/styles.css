@@ -1,7 +1,11 @@
 html, body { height:100%; width:100%;}
 
-.container-page {
-    padding-top: 60px;
+body {
+    padding-top: 50px;
+}
+
+.jumbotron {
+    margin-top: 20px;
 }
 
 .map {
