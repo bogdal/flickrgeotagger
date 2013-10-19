@@ -22,3 +22,12 @@ class FlickrRequiredMixin(object):
 
         return (super(FlickrRequiredMixin, self)
                 .dispatch(request, *args, **kwargs))
+
+
+class ActiveMenuMixin(object):
+    active_menu = ''
+
+    def get_context_data(self, **kwargs):
+        context = super(ActiveMenuMixin, self).get_context_data(**kwargs)
+        context['active'] = self.active_menu
+        return context

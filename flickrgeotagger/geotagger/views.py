@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from django.utils.translation import ugettext_lazy as _
 from flickrgeotagger.geotagger import GeoTagger
@@ -6,7 +7,7 @@ from pytz import timezone
 
 from .geoip_timezone import get_user_timezone
 from .forms import UploadGpxFileForm, TimezoneForm
-from .views_mixins import FlickrRequiredMixin
+from .views_mixins import FlickrRequiredMixin, ActiveMenuMixin
 
 
 GEOTAGGER_SESSION_KEY = 'geotagger'
@@ -19,9 +20,10 @@ class HomeView(TemplateView):
         return super(HomeView, self).get_context_data(**kwargs)
 
 
-class UploadFileView(FlickrRequiredMixin, FormView):
+class UploadFileView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
     template_name = 'geotagger/upload_file.html'
     form_class = UploadGpxFileForm
+    active_menu = 'upload_file'
 
     def form_valid(self, form):
         user_timezone = get_user_timezone(self.request)
@@ -38,12 +40,15 @@ class UploadFileView(FlickrRequiredMixin, FormView):
         return reverse('preview_photos')
 
 
-class PreviewView(FlickrRequiredMixin, FormView):
+class PreviewView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
     template_name = 'geotagger/preview.html'
     form_class = TimezoneForm
+    active_menu = 'preview_photos'
 
     def dispatch(self, request, *args, **kwargs):
         self.geotagger = (self.request.session.get(GEOTAGGER_SESSION_KEY, {}))
+        if not self.geotagger.get('gpx'):
+            return HttpResponseRedirect(reverse('upload_file'))
         return (super(PreviewView, self)
                 .dispatch(request, *args, **kwargs))
 

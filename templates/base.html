@@ -41,7 +41,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{% url "upload_file" %}">{% trans "Upload new file" %}</a></li>
+            <li {% if active == 'upload_file' %}class="active"{% endif %}><a href="{% url "upload_file" %}">{% trans "Upload track" %}</a></li>
+            <li {% if active == 'preview_photos' %}class="active"{% endif %}><a href="{% url "preview_photos" %}">{% trans "Select photos" %}</a></li>
           </ul>
           {% block navbar_right %}{% endblock %}
         </div><!--/.nav-collapse -->
