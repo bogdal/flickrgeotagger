@@ -1,11 +1,11 @@
 html, body { height:100%; width:100%;}
 
 body {
-    padding-top: 50px;
+    padding-top: 70px;
 }
 
 .jumbotron {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .nav li form {
@@ -13,6 +13,7 @@ body {
 }
 
 .map {
+    margin-top: -20px;
     width: 100%;
     height: 100%;
 }

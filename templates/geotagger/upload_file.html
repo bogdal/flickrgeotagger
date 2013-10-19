@@ -2,15 +2,15 @@
 {% load i18n %}
 
 {% block content %}
-    <div class="span12">
-        <form action="." method="post" enctype="multipart/form-data" class="form-horizontal">
-            <fieldset>
-                {% csrf_token %}
+    <div class="well">
+        <form action="." method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
                 {{ form }}
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">{% trans 'Upload' %}</button>
-              </div>
-          </fieldset>
+            </div>
+
+            <button type="submit" class="btn btn-primary">{% trans 'Upload' %}</button>
         </form>
     </div>
 {% endblock %}
