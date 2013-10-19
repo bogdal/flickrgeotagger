@@ -16,10 +16,15 @@ function initialize() {
 
 function addMarker(photo) {
     var markerLatLng = new google.maps.LatLng(photo.latitude, photo.longitude);
+    var icon = " http://maps.google.com/intl/en_us/mapfiles/ms/micons/red.png";
+    if(photo.has_geo) {
+        icon = "http://maps.google.com/mapfiles/marker_green.png";
+    }
     var marker = new google.maps.Marker({
             position: markerLatLng,
             map: map,
-            title: photo.title
+            title: photo.title,
+            icon: icon
     });
     bounds.extend(markerLatLng);
 

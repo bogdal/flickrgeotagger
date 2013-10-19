@@ -110,7 +110,9 @@ class GeoTagger(object):
                     'taken': taken,
                     'url': photo.get('url_s'),
                     'latitude': location.latitude,
-                    'longitude': location.longitude
+                    'longitude': location.longitude,
+                    'has_geo': all([photo.get('latitude'),
+                                    photo.get('longitude')])
                 })
 
         setattr(self, '_get_localized_photos', localized_photos)
