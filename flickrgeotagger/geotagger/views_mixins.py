@@ -2,6 +2,7 @@ import urlparse
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.utils.decorators import method_decorator
 
 from flickr import FlickrAPI

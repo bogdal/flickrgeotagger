@@ -69,3 +69,25 @@ function show_map(photos, points){
     show_markers(photos);
     show_points(points);
 }
+
+function save_coordinates() {
+
+    $.blockUI({ message: '<h4>' + save_coordinates_message + '</h4>' });
+
+    $.ajax({
+        url: save_coordinates_url,
+        type: "POST",
+        data: {
+            'csrfmiddlewaretoken': csrftoken
+        }
+    })
+    .done(function(){
+        $.unblockUI;
+        window.location.reload();
+    })
+    .fail(function() {
+
+    });
+
+//
+}

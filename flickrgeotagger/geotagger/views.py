@@ -1,16 +1,13 @@
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.views.generic import FormView, TemplateView
+from django.http import HttpResponseRedirect, HttpResponse
+from django.views.generic import FormView, TemplateView, View
 from django.utils.translation import ugettext_lazy as _
 from flickrgeotagger.geotagger import GeoTagger
 from pytz import timezone
 
 from .geoip_timezone import get_user_timezone
 from .forms import UploadGpxFileForm, TimezoneForm
-from .views_mixins import FlickrRequiredMixin, ActiveMenuMixin
-
-
-GEOTAGGER_SESSION_KEY = 'geotagger'
+from .views_mixins import FlickrRequiredMixin, ActiveMenuMixin, AjaxViewMixin
 
 
 class HomeView(TemplateView):
@@ -27,13 +24,10 @@ class UploadFileView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
 
     def form_valid(self, form):
         user_timezone = get_user_timezone(self.request)
-        session = {
-            'gpx': form.gpx,
-            'geotagger': GeoTagger(api=self.flickr_api,
-                                   coordinates=form.gpx,
-                                   user_timezone=user_timezone)
-        }
-        self.request.session[GEOTAGGER_SESSION_KEY] = session
+        geotagger = GeoTagger(api=self.flickr_api,
+                              coordinates=form.gpx,
+                              user_timezone=user_timezone)
+        setattr(self.request, 'geotagger', geotagger)
         return super(UploadFileView, self).form_valid(form)
 
     def get_success_url(self):
@@ -46,8 +40,7 @@ class PreviewView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
     active_menu = 'preview_photos'
 
     def dispatch(self, request, *args, **kwargs):
-        self.geotagger = (self.request.session.get(GEOTAGGER_SESSION_KEY, {}))
-        if not self.geotagger.get('gpx'):
+        if not request.geotagger:
             return HttpResponseRedirect(reverse('upload_file'))
         return (super(PreviewView, self)
                 .dispatch(request, *args, **kwargs))
@@ -58,14 +51,22 @@ class PreviewView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(PreviewView, self).get_context_data(**kwargs)
 
-        context['gpx_file'] = self.geotagger.get('gpx').gpx_file
-        context['geotagger'] = self.geotagger.get('geotagger')
+        context['geotagger'] = self.request.geotagger
 
         return context
 
     def form_valid(self, form):
-        geotagger = self.geotagger.get('geotagger')
-        geotagger.set_timezone(timezone(form.cleaned_data['timezone']))
-
+        user_timezone = timezone(form.cleaned_data['timezone'])
+        self.request.geotagger.set_timezone(user_timezone)
         return self.render_to_response(
-            self.get_context_data(form=form, geotagger=geotagger))
+            self.get_context_data(form=form, geotagger=self.request.geotagger))
+
+
+class SaveCoordinatesView(FlickrRequiredMixin, View):
+
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        request.geotagger.save_location()
+        request.geotagger.clean_cache()
+        return HttpResponse('')

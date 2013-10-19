@@ -10,10 +10,10 @@
         </form>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ gpx_file }} <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ geotagger.coordinates.gpx_file }} <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">{{ geotagger.get_localized_photos|length }} {% trans "photos" %}</li>
-        <li><a href="#">{% trans "Save all photos" %}</a></li>
+        <li><a id='save_coordinates' href="#">{% trans "Save all photos" %}</a></li>
       </ul>
     </li>
   </ul>
@@ -38,11 +38,21 @@
 
     {% addtoblock "js" %}
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+        <script src="{% static "js/get_cookie.js" %}"></script>
         <script src="{% static "js/geo.js" %}"></script>
         <script>
             var photos = $.parseJSON('{{ geotagger.get_localized_photos|json }}');
             var points = $.parseJSON('{{ geotagger.coordinates.get_points|json }}');
             show_map(photos, points);
+
+            var save_coordinates_url = "{% url 'save_coordinates' %}";
+            var save_coordinates_message = "{% trans "Sync in progress..." %}";
+            var csrftoken = getCookie('csrftoken');
+
+            $("#save_coordinates").click(function(){
+                save_coordinates();
+            });
         </script>
     {% endaddtoblock %}
 

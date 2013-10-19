@@ -72,9 +72,12 @@ class GeoTagger(object):
     def _user_timezone_to_utc(self, time, user_timezone):
         return user_timezone.localize(time).astimezone(self.utc)
 
-    def set_timezone(self, timezone):
+    def clean_cache(self):
         if hasattr(self, '_get_localized_photos'):
             delattr(self, '_get_localized_photos')
+
+    def set_timezone(self, timezone):
+        self.clean_cache()
         self.timezone = timezone
 
     def get_localized_photos(self):
