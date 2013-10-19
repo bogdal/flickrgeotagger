@@ -17,11 +17,16 @@
       </ul>
     </li>
   </ul>
-
+    {% addtoblock "css" %}
+         <link rel="stylesheet" href="{% static "select2/select2.css" %}">
+    {% endaddtoblock %}
     {% addtoblock "js" %}
+        <script src="{% static "select2/select2.min.js" %}"></script>
         <script>
             $(function() {
-                $("#id_timezone").change(function(){
+                var timezone_field = $("#id_timezone");
+                timezone_field.select2({'allowClear': false, 'closeOnSelect': false, 'placeholder': ''});
+                timezone_field.change(function(){
                    $("#timezone-frm").submit();
                 });
             });
