@@ -56,5 +56,13 @@
         </script>
     {% endaddtoblock %}
 
+    <div id="legend" class="well">
+        <h4>{% trans "Legend" %}</h4>
+        <ul class="list-unstyled">
+            <li><img src="http://maps.google.com/mapfiles/marker.png"/> <span>{% trans "Not geotagged" %}</span></li>
+            <li><img src="http://maps.google.com/mapfiles/marker_green.png"/> <span>{% trans "Geotagged photo" %}</span></li>
+        </ul>
+    </div>
+
     <div id="map_canvas" class='map'></div>
 {% endblock %}

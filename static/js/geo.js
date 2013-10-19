@@ -12,11 +12,13 @@ function initialize() {
 
     map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
     bounds = new google.maps.LatLngBounds();
+
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('legend'));
 }
 
 function addMarker(photo) {
     var markerLatLng = new google.maps.LatLng(photo.latitude, photo.longitude);
-    var icon = " http://maps.google.com/intl/en_us/mapfiles/ms/micons/red.png";
+    var icon = "http://maps.google.com/mapfiles/marker.png";
     if(photo.has_geo) {
         icon = "http://maps.google.com/mapfiles/marker_green.png";
     }
