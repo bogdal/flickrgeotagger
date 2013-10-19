@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from flickrgeotagger.geotagger import GeoTagger
 from pytz import timezone
 
+from .geoip_timezone import get_user_timezone
 from .forms import UploadGpxFileForm, TimezoneForm
 from .views_mixins import FlickrRequiredMixin
 
@@ -23,9 +24,12 @@ class UploadFileView(FlickrRequiredMixin, FormView):
     form_class = UploadGpxFileForm
 
     def form_valid(self, form):
+        user_timezone = get_user_timezone(self.request)
         session = {
             'gpx': form.gpx,
-            'geotagger': GeoTagger(api=self.flickr_api, coordinates=form.gpx)
+            'geotagger': GeoTagger(api=self.flickr_api,
+                                   coordinates=form.gpx,
+                                   user_timezone=user_timezone)
         }
         self.request.session[GEOTAGGER_SESSION_KEY] = session
         return super(UploadFileView, self).form_valid(form)
@@ -42,6 +46,9 @@ class PreviewView(FlickrRequiredMixin, FormView):
         self.geotagger = (self.request.session.get(GEOTAGGER_SESSION_KEY, {}))
         return (super(PreviewView, self)
                 .dispatch(request, *args, **kwargs))
+
+    def get_initial(self):
+        return {'timezone': get_user_timezone(self.request)}
 
     def get_context_data(self, **kwargs):
         context = super(PreviewView, self).get_context_data(**kwargs)

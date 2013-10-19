@@ -24,5 +24,4 @@ class UploadGpxFileForm(forms.Form):
 
 class TimezoneForm(forms.Form):
 
-    timezone = forms.ChoiceField(choices=[(x, x) for x in common_timezones],
-                                 initial=settings.TIME_ZONE)
+    timezone = forms.ChoiceField(choices=[(x, x) for x in common_timezones])

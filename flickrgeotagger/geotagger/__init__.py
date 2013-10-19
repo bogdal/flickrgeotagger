@@ -53,10 +53,10 @@ class GeoTagger(object):
 
     utc = timezone('UTC')
 
-    def __init__(self, api, coordinates):
+    def __init__(self, api, coordinates, user_timezone=None):
         self.api = api
         self.coordinates = coordinates
-        self.timezone = timezone(settings.TIME_ZONE)
+        self.timezone = timezone(user_timezone or settings.TIME_ZONE)
 
     def __repr__(self):
         return (u"GeoTagger (api=%s, coordinates=%s)" %

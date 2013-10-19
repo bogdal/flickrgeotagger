@@ -1,4 +1,6 @@
+import geoip_utils
 from os import path
+
 
 PROJECT_ROOT = path.normpath(path.join(path.dirname(__file__), '..'))
 
@@ -148,6 +150,8 @@ AUTHENTICATION_BACKENDS = (
     'social_auth.backends.contrib.flickr.FlickrBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+GEOIP_PATH = geoip_utils.where()
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -5,3 +5,4 @@ python-flickr==0.3.0
 python-openid==2.2.5
 django-social-auth==0.7.25
 django-sekizai==0.7
+django-geoip-utils==0.1.1
