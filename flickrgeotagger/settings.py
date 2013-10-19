@@ -140,6 +140,8 @@ FLICKR_API_SECRET = ''
 
 FLICKR_AUTH_EXTRA_ARGUMENTS = {'perms': 'write'}
 
+DROPBOX_APP_KEY = ''
+
 LOGIN_REDIRECT_URL = '/upload/'
 LOGIN_URL = '/login/flickr/'
 LOGIN_ERROR_URL = '/login-error/'

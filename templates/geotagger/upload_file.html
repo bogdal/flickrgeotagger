@@ -1,16 +1,41 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n sekizai_tags %}
 
 {% block content %}
     <div class="well">
-        <form action="." method="post" enctype="multipart/form-data">
-            {% csrf_token %}
 
-            <div class="form-group">
-                {{ form }}
-            </div>
+        <div class="col-md-6">
+            <form action="." method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-            <button type="submit" class="btn btn-primary">{% trans 'Upload' %}</button>
-        </form>
+                <div class="form-group">
+                    {{ form }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">{% trans 'Upload' %}</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            {% if dropbox_form %}
+                <h4>Dropbox</h4>
+                <form action="." method="post" id="dropbox-frm">
+                    {% csrf_token %}
+                    {{ dropbox_form }}
+                </form>
+
+                {% addtoblock "js" %}
+                    {{ dropbox_form.media.js }}
+
+                    <script>
+                        $("#dropboxjs").bind("DbxChooserSuccess", function(e){
+                            $("#dropbox-frm").submit();
+                        });
+                    </script>
+                {% endaddtoblock %}
+            {% endif %}
+        </div>
+
+        <div class="clearfix"></div>
     </div>
 {% endblock %}

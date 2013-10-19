@@ -1,12 +1,12 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import FormView, TemplateView, View
-from django.utils.translation import ugettext_lazy as _
 from flickrgeotagger.geotagger import GeoTagger
 from pytz import timezone
 
 from .geoip_timezone import get_user_timezone
-from .forms import UploadGpxFileForm, TimezoneForm
+from .forms import UploadGpxFileForm, TimezoneForm, DropboxChooserForm
 from .views_mixins import FlickrRequiredMixin, ActiveMenuMixin
 
 
@@ -20,7 +20,34 @@ class HomeView(TemplateView):
 class UploadFileView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
     template_name = 'geotagger/upload_file.html'
     form_class = UploadGpxFileForm
+    form_class_dropbox = DropboxChooserForm
     active_menu = 'upload_file'
+
+    def get_context_data(self, **kwargs):
+        context = super(UploadFileView, self).get_context_data(**kwargs)
+        if not 'form' in context:
+            context['form'] = self.form_class()
+        if settings.DROPBOX_APP_KEY and not 'dropbox_form' in context:
+            context['dropbox_form'] = self.form_class_dropbox()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if 'chooser' in request.POST:
+            form_class = self.form_class_dropbox
+            form_name = "dropbox_form"
+        else:
+            form_class = self.form_class
+            form_name = "form"
+
+        form = self.get_form(form_class)
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(**{form_name: form})
+
+    def form_invalid(self, **kwargs):
+        return self.render_to_response(self.get_context_data(**kwargs))
 
     def form_valid(self, form):
         user_timezone = get_user_timezone(self.request)
