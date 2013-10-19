@@ -7,7 +7,7 @@ from pytz import timezone
 
 from .geoip_timezone import get_user_timezone
 from .forms import UploadGpxFileForm, TimezoneForm
-from .views_mixins import FlickrRequiredMixin, ActiveMenuMixin, AjaxViewMixin
+from .views_mixins import FlickrRequiredMixin, ActiveMenuMixin
 
 
 class HomeView(TemplateView):
