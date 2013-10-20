@@ -140,6 +140,7 @@ FLICKR_API_SECRET = ''
 
 FLICKR_AUTH_EXTRA_ARGUMENTS = {'perms': 'write'}
 
+# https://www.dropbox.com/developers/dropins/chooser/js
 DROPBOX_APP_KEY = ''
 
 LOGIN_REDIRECT_URL = '/upload/'
