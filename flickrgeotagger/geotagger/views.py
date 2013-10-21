@@ -32,7 +32,7 @@ class UploadFileView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if 'chooser' in request.POST:
+        if 'dropbox_chooser' in request.POST:
             form_class = self.form_class_dropbox
             form_name = "dropbox_form"
         else:

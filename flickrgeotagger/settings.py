@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     # external
     'social_auth',
     'sekizai',
+    'dropboxchooser_field',
 )
 
 FLICKR_APP_ID = ''
