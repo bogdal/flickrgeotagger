@@ -122,11 +122,13 @@ class GeoTagger(object):
         return localized_photos
         
     def save_location(self, photos=None, override_geo=False):
+
         if photos is None:
             photos = self.get_localized_photos()
             for photo in photos:
                 if not override_geo and photo['has_geo']:
                     continue
+
                 self.api.get('flickr.photos.geo.setLocation', params={
                     'photo_id': photo['id'],
                     'lat': photo['latitude'],

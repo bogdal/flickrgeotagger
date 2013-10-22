@@ -84,11 +84,11 @@ function save_coordinates() {
         }
     })
     .done(function(){
-        $.unblockUI;
         window.location.reload();
     })
-    .fail(function() {
-
+    .fail(function(e) {
+        $.unblockUI();
+        alert('Ups '+ e.statusText);
     });
 
 //

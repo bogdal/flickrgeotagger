@@ -67,7 +67,7 @@ class PreviewView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
     active_menu = 'preview_photos'
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.geotagger:
+        if not hasattr(request, 'geotagger'):
             return HttpResponseRedirect(reverse('upload_file'))
         return (super(PreviewView, self)
                 .dispatch(request, *args, **kwargs))
