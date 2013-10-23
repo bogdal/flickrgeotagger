@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
@@ -94,6 +96,8 @@ class SaveCoordinatesView(FlickrRequiredMixin, View):
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
-        request.geotagger.save_location()
-        request.geotagger.clean_cache()
+        photos = json.loads(request.POST.get('photos', {}))
+        if photos:
+            request.geotagger.save_location(photos=photos)
+            request.geotagger.clean_cache()
         return HttpResponse('')

@@ -47,11 +47,10 @@
             show_map(photos, points);
 
             var save_coordinates_url = "{% url 'save_coordinates' %}";
-            var save_coordinates_message = "{% trans "Sync in progress..." %}";
             var csrftoken = getCookie('csrftoken');
 
             $("#save_coordinates").click(function(){
-                save_coordinates();
+                save_coordinates(photos);
             });
         </script>
     {% endaddtoblock %}
@@ -62,6 +61,10 @@
             <li><img src="http://maps.google.com/mapfiles/marker.png"/> <span>{% trans "Not geotagged" %}</span></li>
             <li><img src="http://maps.google.com/mapfiles/marker_green.png"/> <span>{% trans "Geotagged photo" %}</span></li>
         </ul>
+    </div>
+
+    <div id="message_popup" style="display:none;">
+    <h4>{% trans "Sync in progress..." %} <span class='counter'>0</span>/<span class='total'>0</span></h4>
     </div>
 
     <div id="map_canvas" class='map'></div>

@@ -72,24 +72,59 @@ function show_map(photos, points){
     show_points(points);
 }
 
-function save_coordinates() {
+function chunk (arr, len) {
 
-    $.blockUI({ message: '<h4>' + save_coordinates_message + '</h4>' });
+  var chunks = [],
+      i = 0,
+      n = arr.length;
 
-    $.ajax({
-        url: save_coordinates_url,
-        type: "POST",
-        data: {
-            'csrfmiddlewaretoken': csrftoken
-        }
-    })
-    .done(function(){
+  while (i < n) {
+    chunks.push(arr.slice(i, i += len));
+  }
+
+  return chunks;
+}
+
+function init_message_popup(total) {
+    $("#message_popup .total").html(total);
+    $("#message_popup .counter").html(0);
+}
+
+function increase_popup_counter(items) {
+    var counter = $("#message_popup .counter");
+    var value = parseInt(counter.html()) + items;
+    counter.html(value);
+}
+
+function save_chunk(index, chunks) {
+    var chunk = chunks[index];
+
+    if(chunk != undefined) {
+        $.ajax({
+            url: save_coordinates_url,
+            type: "POST",
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'photos': JSON.stringify(chunk)
+            }
+        })
+        .done(function(){
+            increase_popup_counter(chunk.length);
+            save_chunk(++index, chunks);
+        })
+        .fail(function(e) {
+            $.unblockUI();
+            alert('Ups '+ e.statusText);
+        });
+    } else {
         window.location.reload();
-    })
-    .fail(function(e) {
-        $.unblockUI();
-        alert('Ups '+ e.statusText);
-    });
+    }
+}
 
-//
+function save_coordinates(photos) {
+
+    $.blockUI({ message: $("#message_popup") });
+
+    init_message_popup(photos.length);
+    save_chunk(0, chunk(photos, 10));
 }
