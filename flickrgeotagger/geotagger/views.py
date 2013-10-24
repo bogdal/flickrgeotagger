@@ -16,7 +16,10 @@ class HomeView(TemplateView):
     template_name = 'geotagger/home.html'
 
     def get_context_data(self, **kwargs):
-        return super(HomeView, self).get_context_data(**kwargs)
+        context = super(HomeView, self).get_context_data(**kwargs)
+        github_buttons = getattr(settings, 'SHOW_GITHUB_BUTTONS', None)
+        context['github_buttons'] = github_buttons
+        return context
 
 
 class UploadFileView(ActiveMenuMixin, FlickrRequiredMixin, FormView):

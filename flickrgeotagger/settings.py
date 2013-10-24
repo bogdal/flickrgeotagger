@@ -184,3 +184,5 @@ LOGGING = {
         },
     }
 }
+
+SHOW_GITHUB_BUTTONS = True
