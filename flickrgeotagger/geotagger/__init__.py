@@ -4,6 +4,8 @@ import gpxpy
 import gpxpy.gpx
 from pytz import timezone
 
+from .utils import cache, CACHE_ATTRIBUTES_LIST
+
 
 class Backend(object):
 
@@ -72,18 +74,18 @@ class GeoTagger(object):
     def _user_timezone_to_utc(self, time, user_timezone):
         return user_timezone.localize(time).astimezone(self.utc)
 
-    def clean_cache(self):
-        if hasattr(self, '_get_localized_photos'):
-            delattr(self, '_get_localized_photos')
+    def clear_cache(self):
+        cache_attributes = getattr(self, CACHE_ATTRIBUTES_LIST, [])
+        for attribute in cache_attributes:
+            if hasattr(self, attribute):
+                delattr(self, attribute)
 
     def set_timezone(self, timezone):
-        self.clean_cache()
+        self.clear_cache()
         self.timezone = timezone
 
+    @cache('_get_localized_photos')
     def get_localized_photos(self):
-        if hasattr(self, '_get_localized_photos'):
-            return self._get_localized_photos
-
         localized_photos = []
 
         start_time = self._utc_to_user_timezone(self.coordinates.start_time,
@@ -120,14 +122,15 @@ class GeoTagger(object):
                                     photo.get('longitude')])
                 })
 
-        setattr(self, '_get_localized_photos', localized_photos)
         return localized_photos
 
     @property
+    @cache('_number_of_geotagged_photos')
     def number_of_geotagged_photos(self):
         return len(filter(lambda x: x['has_geo'], self.get_localized_photos()))
 
     @property
+    @cache('_number_of_not_geotagged_photos')
     def number_of_not_geotagged_photos(self):
         return (len(self.get_localized_photos())
                 - self.number_of_geotagged_photos)
