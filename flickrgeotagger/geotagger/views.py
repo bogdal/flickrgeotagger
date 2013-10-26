@@ -78,7 +78,7 @@ class PreviewView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
                 .dispatch(request, *args, **kwargs))
 
     def get_initial(self):
-        return {'timezone': get_user_timezone(self.request)}
+        return {'timezone': self.request.geotagger.timezone}
 
     def get_context_data(self, **kwargs):
         context = super(PreviewView, self).get_context_data(**kwargs)
