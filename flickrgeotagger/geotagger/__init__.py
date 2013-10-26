@@ -120,6 +120,15 @@ class GeoTagger(object):
 
         setattr(self, '_get_localized_photos', localized_photos)
         return localized_photos
+
+    @property
+    def number_of_geotagged_photos(self):
+        return len(filter(lambda x: x['has_geo'], self.get_localized_photos()))
+
+    @property
+    def number_of_not_geotagged_photos(self):
+        return (len(self.get_localized_photos())
+                - self.number_of_geotagged_photos)
         
     def save_location(self, photos=None, override_geo=False):
 
