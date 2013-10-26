@@ -39,6 +39,9 @@ function addMarker(photo) {
     google.maps.event.addListener(marker, 'mouseout', function() {
         infoWindow.close();
     });
+    google.maps.event.addListener(marker, 'dblclick', function() {
+        window.open(photo.flickr_url, '_blank');
+    });
 }
 
 function show_markers(photos) {

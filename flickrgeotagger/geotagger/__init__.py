@@ -97,7 +97,7 @@ class GeoTagger(object):
                            'min_taken_date': start_time,
                            'max_taken_date': end_time,
                            'per_page': 500,
-                           'extras': "geo,url_t,url_s,date_taken"})
+                           'extras': "geo,url_t,url_s,date_taken,path_alias"})
                   .get('photos'))
 
         for photo in photos.get('photo'):
@@ -106,12 +106,14 @@ class GeoTagger(object):
                      .replace(tzinfo=None))
             location = self.coordinates.get_location_at(taken)
             if location:
-
+                flickr_url = ("http://flickr.com/photos/%s/%s" %
+                              (photo.get('pathalias'), photo.get('id')))
                 localized_photos.append({
                     'id': photo.get('id'),
                     'title': photo.get('title'),
                     'taken': taken,
                     'url': photo.get('url_s'),
+                    'flickr_url': flickr_url,
                     'latitude': location.latitude,
                     'longitude': location.longitude,
                     'has_geo': all([photo.get('latitude'),
