@@ -13,7 +13,7 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ geotagger.coordinates.gpx_file }} <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">{{ geotagger.get_localized_photos|length }} {% trans "photos" %}</li>
-        <li><a id='save_coordinates' href="#"><span class="glyphicon glyphicon-save"></span> {% trans "Sync photos" %}</a></li>
+        <li><a class='save_coordinates' href="#"><span class="glyphicon glyphicon-save"></span> {% trans "Sync photos" %}</a></li>
       </ul>
     </li>
   </ul>
@@ -42,15 +42,15 @@
         <script src="{% static "js/get_cookie.js" %}"></script>
         <script src="{% static "js/geo.js" %}"></script>
         <script>
-            var photos = $.parseJSON('{{ geotagger.get_localized_photos|json }}');
-            var points = $.parseJSON('{{ geotagger.coordinates.get_points|json }}');
-            show_map(photos, points);
+            geo.photos = $.parseJSON('{{ geotagger.get_localized_photos|json }}');
+            geo.points = $.parseJSON('{{ geotagger.coordinates.get_points|json }}');
+            geo.render();
 
             var save_coordinates_url = "{% url 'save_coordinates' %}";
             var csrftoken = getCookie('csrftoken');
 
-            $("#save_coordinates").click(function(){
-                save_coordinates(photos);
+            $(".save_coordinates").click(function(){
+                save_coordinates(geo.photos);
             });
         </script>
     {% endaddtoblock %}

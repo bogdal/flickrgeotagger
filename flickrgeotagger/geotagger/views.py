@@ -102,5 +102,5 @@ class SaveCoordinatesView(FlickrRequiredMixin, View):
         photos = json.loads(request.POST.get('photos', {}))
         if photos:
             request.geotagger.save_location(photos=photos)
-            request.geotagger.clean_cache()
+            request.geotagger.clear_cache()
         return HttpResponse('')

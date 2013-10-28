@@ -41,7 +41,7 @@
           <ul class="nav navbar-nav">
             <li {% if active == 'upload_file' %}class="active"{% endif %}><a href="{% url "upload_file" %}"><span class="badge">1</span> {% trans "Upload track" %}</a></li>
             <li {% if active == 'preview_photos' %}class="active"{% endif %}><a href="{% url "preview_photos" %}"><span class="badge">2</span> {% trans "Select photos" %}</a></li>
-            <li {% if active == 'synchronize' %}class="active"{% endif %}><a href="#"><span class="badge">3</span> {% trans "Synchronize" %}</a></li>
+            <li {% if active == 'synchronize' %}class="active"{% endif %}><a class='save_coordinates' href="#"><span class="badge">3</span> {% trans "Synchronize" %}</a></li>
           </ul>
           {% block navbar_right %}{% endblock %}
         </div><!--/.nav-collapse -->
