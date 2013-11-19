@@ -9,8 +9,12 @@
         <p><a class="btn btn-success" href="{% url "upload_file" %}">{% trans "Continue" %} »</a></p>
     </div>
 
+    <div class="pull-right">
+        {% include "includes/add_this.html" %}
+    </div>
+
     {% if github_buttons %}
-        <div class="pull-right">
+        <div class="pull-left">
             {% include "includes/github.html" %}
         </div>
     {% endif %}
