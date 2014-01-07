@@ -1,7 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from dropboxchooser_field.fields import DropboxChooserField
-from dropboxchooser_field.widgets import DropboxChooserWidget
 from pytz import common_timezones
 
 from . import GpxBackend, BackendException
@@ -32,9 +31,7 @@ class UploadGpxFileForm(forms.Form):
 class DropboxChooserForm(UploadGpxFileForm):
 
     dropbox_chooser = forms.CharField(widget=forms.HiddenInput, required=False)
-    gpx_file = DropboxChooserField(
-        label='',
-        widget=DropboxChooserWidget(attrs={'data-extensions': '.gpx'}))
+    gpx_file = DropboxChooserField(extensions=['gpx'], label='')
 
 
 class TimezoneForm(forms.Form):
