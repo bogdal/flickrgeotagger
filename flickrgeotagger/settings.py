@@ -102,6 +102,8 @@ MIDDLEWARE_CLASSES = (
     'flickrgeotagger.geotagger.middleware.GeoTaggerMiddleware',
 )
 
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
 ROOT_URLCONF = 'flickrgeotagger.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
