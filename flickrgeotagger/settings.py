@@ -1,10 +1,10 @@
+from os import path, environ
 import geoip_utils
-from os import path
-
+import dj_database_url
 
 PROJECT_ROOT = path.normpath(path.join(path.dirname(__file__), '..'))
 
-DEBUG = True
+DEBUG = bool(environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -13,20 +13,13 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',# Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': path.join(PROJECT_ROOT, 'database.db'),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
+SQLITE_DB_URL = 'sqlite:///' + path.join(PROJECT_ROOT, 'database.db')
+
+DATABASES = {'default': dj_database_url.config(default=SQLITE_DB_URL)}
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS', '').split()
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -84,7 +77,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 's9o&g=8um2=igksl7v4i=-ez++yeq@zy&5(nc4qp*j*(5tw7h9'
+SECRET_KEY = environ.get('SECRET_KEY')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -138,13 +131,13 @@ INSTALLED_APPS = (
     'dropboxchooser_field',
 )
 
-FLICKR_APP_ID = ''
-FLICKR_API_SECRET = ''
+FLICKR_APP_ID = environ.get('FLICKR_APP_ID', '')
+FLICKR_API_SECRET = environ.get('FLICKR_API_SECRET', '')
 
 FLICKR_AUTH_EXTRA_ARGUMENTS = {'perms': 'write'}
 
 # https://www.dropbox.com/developers/dropins/chooser/js
-DROPBOX_APP_KEY = ''
+DROPBOX_APP_KEY = environ.get('DROPBOX_APP_KEY', '')
 
 LOGIN_REDIRECT_URL = '/upload/'
 LOGIN_URL = '/login/flickr/'
@@ -187,4 +180,4 @@ LOGGING = {
     }
 }
 
-SHOW_GITHUB_BUTTONS = True
+SHOW_GITHUB_BUTTONS = environ.get('SHOW_GITHUB_BUTTONS', False)

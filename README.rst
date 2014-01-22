@@ -8,23 +8,29 @@ Usage
 -----
 
 
-1. Install dependencies::
+1. Install the project in development mode::
   
+    python setup.py develop
+    
+2. Set your ``SECRET_KEY`` in the environment variable::
 
-    make install
+    export SECRET_KEY=''
 
-2. Prepare the database::
+3. Prepare the database::
 
     python manage.py syncdb
     
-3. Configure your flickr app credentials in the ``settings.py`` file::
+    
+``flickrgeotagger`` is a shortcut for running ``python manage.py`` so you can use it to execute all management commands
+    
+4. Configure your flickr app credentials in the environment variables::
 
-    FLICKR_APP_ID = ''
-    FLICKR_API_SECRET = ''
+    export FLICKR_APP_ID=''
+    export FLICKR_API_SECRET=''
 
 Dropbox integration (optional)
 ++++++++++++++++++++++++++++++
 
-Add your `Drop-in <https://www.dropbox.com/developers/dropins/chooser/js>`_ app key to the ``settings.py`` file::
+Add your `Drop-in <https://www.dropbox.com/developers/dropins/chooser/js>`_ app key to the environment variable::
 
-  DROPBOX_APP_KEY = ''
+    export DROPBOX_APP_KEY=''
