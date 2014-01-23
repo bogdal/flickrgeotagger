@@ -24,7 +24,5 @@ setup(
         'dj_database_url>=0.2.2',
     ],
     entry_points={
-        'console_scripts': [
-            'flickrgeotagger = flickrgeotagger:manage',
-            'flickrgeotagger.wsgi = flickrgeotagger.wsgi']},
+        'console_scripts': ['flickrgeotagger = flickrgeotagger:manage']},
 )
