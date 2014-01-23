@@ -25,5 +25,7 @@ setup(
         'dj-static>=0.0.5',
     ],
     entry_points={
-        'console_scripts': ['flickrgeotagger = flickrgeotagger:manage']},
+        'console_scripts': [
+            'flickrgeotagger = flickrgeotagger:manage',
+            'flickrgeotagger.wsgi = flickrgeotagger.wsgi']},
 )
