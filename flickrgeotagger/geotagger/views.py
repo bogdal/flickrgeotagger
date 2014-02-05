@@ -15,12 +15,6 @@ from .views_mixins import FlickrRequiredMixin, ActiveMenuMixin
 class HomeView(TemplateView):
     template_name = 'geotagger/home.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        github_buttons = getattr(settings, 'SHOW_GITHUB_BUTTONS', None)
-        context['github_buttons'] = github_buttons
-        return context
-
 
 class UploadFileView(ActiveMenuMixin, FlickrRequiredMixin, FormView):
     template_name = 'geotagger/upload_file.html'

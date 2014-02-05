@@ -113,6 +113,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social_auth.context_processors.social_auth_by_type_backends',
     'social_auth.context_processors.social_auth_login_redirect',
     'sekizai.context_processors.sekizai',
+    'flickrgeotagger.geotagger.context_processors.social_media_buttons',
 )
 
 INSTALLED_APPS = (
@@ -181,3 +182,4 @@ LOGGING = {
 }
 
 SHOW_GITHUB_BUTTONS = environ.get('SHOW_GITHUB_BUTTONS', False)
+SHOW_ADDTHIS_BUTTONS = environ.get('SHOW_ADDTHIS_BUTTONS', False)
