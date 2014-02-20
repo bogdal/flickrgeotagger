@@ -50,10 +50,33 @@
             var csrftoken = getCookie('csrftoken');
 
             $(".save_coordinates").click(function(){
+                $('#syncModal').modal('show');
+            });
+
+            $("#synchronize").click(function(){
+                $('#syncModal').modal('hide');
                 save_coordinates(geo.photos);
             });
         </script>
     {% endaddtoblock %}
+
+    <div class="modal fade" id="syncModal" tabindex="-1" role="dialog" aria-labelledby="syncModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="syncModalLabel">{% trans "Synchronize" %}..</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="checkbox"> {% trans "override the existing coordinates" %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button type="button" id='synchronize' class="btn btn-primary">{% trans "Synchronize" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="legend" class="well">
         <h4>{% trans "Legend" %}</h4>
@@ -68,4 +91,5 @@
     </div>
 
     <div id="map_canvas" class='map'></div>
+
 {% endblock %}
