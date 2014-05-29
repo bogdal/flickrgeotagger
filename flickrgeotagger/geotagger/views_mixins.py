@@ -12,11 +12,10 @@ class FlickrRequiredMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         tokens = request.user.social_auth.get(provider='flickr').tokens
-        tokens = dict(urlparse.parse_qsl(tokens.get('access_token')))
 
         self.flickr_api = FlickrAPI(
-            api_key=settings.FLICKR_APP_ID,
-            api_secret=settings.FLICKR_API_SECRET,
+            api_key=settings.SOCIAL_AUTH_FLICKR_KEY,
+            api_secret=settings.SOCIAL_AUTH_FLICKR_SECRET,
             oauth_token=tokens.get('oauth_token'),
             oauth_token_secret=tokens.get('oauth_token_secret'))
 
