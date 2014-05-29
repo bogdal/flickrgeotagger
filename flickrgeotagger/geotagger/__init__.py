@@ -89,9 +89,9 @@ class GeoTagger(object):
         localized_photos = []
 
         start_time = self._utc_to_user_timezone(self.coordinates.start_time,
-                                                self.timezone)
+                                                self.timezone).replace(tzinfo=None)
         end_time = self._utc_to_user_timezone(self.coordinates.end_time,
-                                              self.timezone)
+                                              self.timezone).replace(tzinfo=None)
         photos = (self.api
                   .get('flickr.photos.search',
                        params={
