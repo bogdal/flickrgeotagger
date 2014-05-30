@@ -108,10 +108,8 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
-    'social_auth.context_processors.social_auth_by_name_backends',
-    'social_auth.context_processors.social_auth_backends',
-    'social_auth.context_processors.social_auth_by_type_backends',
-    'social_auth.context_processors.social_auth_login_redirect',
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
     'sekizai.context_processors.sekizai',
     'flickrgeotagger.geotagger.context_processors.social_media_buttons',
 )
@@ -127,15 +125,15 @@ INSTALLED_APPS = (
     'flickrgeotagger.geotagger',
 
     # external
-    'social_auth',
+    'social.apps.django_app.default',
     'sekizai',
     'dropboxchooser_field',
 )
 
-FLICKR_APP_ID = environ.get('FLICKR_APP_ID', '')
-FLICKR_API_SECRET = environ.get('FLICKR_API_SECRET', '')
+SOCIAL_AUTH_FLICKR_KEY = environ.get('FLICKR_KEY', '')
+SOCIAL_AUTH_FLICKR_SECRET = environ.get('FLICKR_SECRET', '')
 
-FLICKR_AUTH_EXTRA_ARGUMENTS = {'perms': 'write'}
+SOCIAL_AUTH_FLICKR_AUTH_EXTRA_ARGUMENTS = {'perms': 'write'}
 
 # https://www.dropbox.com/developers/dropins/chooser/js
 DROPBOX_APP_KEY = environ.get('DROPBOX_APP_KEY', '')
@@ -146,7 +144,7 @@ LOGIN_ERROR_URL = '/login-error/'
 
 
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.contrib.flickr.FlickrBackend',
+    'social.backends.flickr.FlickrOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 

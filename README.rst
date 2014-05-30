@@ -25,8 +25,8 @@ Usage
     
 4. Configure your flickr app credentials in the environment variables::
 
-    export FLICKR_APP_ID=''
-    export FLICKR_API_SECRET=''
+    export FLICKR_KEY=''
+    export FLICKR_SECRET=''
 
 Dropbox integration (optional)
 ++++++++++++++++++++++++++++++

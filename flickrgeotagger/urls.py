@@ -6,7 +6,7 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns(
     '',
-    url(r'', include('social_auth.urls')),
+    url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^', include('flickrgeotagger.geotagger.urls')),
 
     # Examples:

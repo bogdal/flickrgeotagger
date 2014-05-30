@@ -28,7 +28,7 @@
                     {{ dropbox_form.media.js }}
 
                     <script>
-                        $("#dropboxjs").bind("DbxChooserSuccess", function(e){
+                        $('input[type=dropbox-chooser]').bind('dropboxChooserSuccess', function(e){
                             $("#dropbox-frm").submit();
                         });
                     </script>
