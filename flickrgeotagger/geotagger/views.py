@@ -1,9 +1,10 @@
 import json
 
 from django.conf import settings
+from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import FormView, TemplateView, View, RedirectView
 from flickrgeotagger.geotagger import GeoTagger
 from pytz import timezone
 
@@ -98,3 +99,12 @@ class SaveCoordinatesView(FlickrRequiredMixin, View):
             request.geotagger.save_location(photos=photos)
             request.geotagger.clear_cache()
         return HttpResponse('')
+
+
+class LogoutView(RedirectView):
+
+    url = '/'
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return super(LogoutView, self).get(request, *args, **kwargs)

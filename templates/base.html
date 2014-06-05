@@ -43,6 +43,11 @@
             <li {% if active == 'preview_photos' %}class="active"{% endif %}><a href="{% url "preview_photos" %}"><span class="badge">2</span> {% trans "Select photos" %}</a></li>
             <li {% if active == 'synchronize' %}class="active"{% endif %}><a class='save_coordinates' href="#"><span class="badge">3</span> {% trans "Synchronize" %}</a></li>
           </ul>
+          {% if request.user.is_authenticated %}
+          <ul class="nav navbar-nav navbar-right">
+              <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> {% trans "Logout" %}</a></li>
+          </ul>
+          {% endif %}
           {% block navbar_right %}{% endblock %}
         </div><!--/.nav-collapse -->
       </div>
