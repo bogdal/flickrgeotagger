@@ -37,8 +37,8 @@
 {% block container %}
 
     {% addtoblock "js" %}
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-        <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+        <script src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script src="//malsup.github.io/jquery.blockUI.js"></script>
         <script src="{% static "js/get_cookie.js" %}"></script>
         <script src="{% static "js/geo.js" %}"></script>
         <script>
@@ -81,8 +81,8 @@
     <div id="legend" class="well">
         <h4>{% trans "Legend" %}</h4>
         <ul class="list-unstyled">
-            <li class="not_geotagged"><img src="http://maps.google.com/mapfiles/marker.png"/> <span>{% trans "Not geotagged" %} <span class="counter">({{ geotagger.number_of_not_geotagged_photos }})</span></span></li>
-            <li class="geotagged"><img src="http://maps.google.com/mapfiles/marker_green.png"/> <span>{% trans "Geotagged photo" %} <span class="counter">({{ geotagger.number_of_geotagged_photos }})</span></span></li>
+            <li class="not_geotagged"><img src="//maps.google.com/mapfiles/marker.png"/> <span>{% trans "Not geotagged" %} <span class="counter">({{ geotagger.number_of_not_geotagged_photos }})</span></span></li>
+            <li class="geotagged"><img src="//maps.google.com/mapfiles/marker_green.png"/> <span>{% trans "Geotagged photo" %} <span class="counter">({{ geotagger.number_of_geotagged_photos }})</span></span></li>
         </ul>
     </div>
 
